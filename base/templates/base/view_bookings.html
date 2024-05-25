@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">View Bookings</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Car</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.car.name }} {{ booking.car.model }}</td>
+                        <td>{{ booking.start_date }}</td>
+                        <td>{{ booking.end_date }}</td>
+                        <td>{% if booking.is_approved %}<span class="badge bg-success">Approved</span>{% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}</td>
+                        <td>{{ booking.user.username }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-4 text-center">Pay for Booking</h1>
+
+            {% if messages %}
+                <div>
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-primary text-white">
+                    Booking Details - Booking ID: {{ booking.id }}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="card-title">Car: {{ booking.car.name }} {{ booking.car.model }}</h5>
+                            <img src="{{ booking.car.image.url }}" class="img-fluid rounded shadow mb-3" alt="{{ booking.car.name }}">
+                            <p class="card-text"><strong>Price:</strong> {{ booking.car.price }} DH/day</p>
+                            <p class="card-text"><strong>Start Date:</strong> {{ booking.start_date }}</p>
+                            <p class="card-text"><strong>End Date:</strong> {{ booking.end_date }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="card-title">Payment Details</h5>
+                            <form method="post" novalidate onsubmit="stripSpaces()">
+                                {% csrf_token %}
+                                <div class="form-group mb-3 position-relative">
+                                    <label for="payment_method">Payment Method</label>
+                                    <select name="payment_method" id="payment_method" class="form-control form-control-lg" required>
+                                        <option value="" disabled selected>Select a payment method</option>
+                                        <option value="Credit Card">Credit Card</option>
+                                        <option value="Debit Card">Debit Card</option>
+                                    </select>
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.payment_method.errors|join:", " }}
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3 position-relative">
+                                    <label for="card_number">Card Number</label>
+                                    <input type="text" name="card_number" id="card_number" class="form-control form-control-lg" required maxlength="19" oninput="formatCardNumber(this)">
+                                    <div id="card-icon" class="card-icon"></div>
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.card_number.errors|join:", " }}
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="card_holder">Card Holder Name</label>
+                                    <input type="text" name="card_holder" id="card_holder" class="form-control form-control-lg" required>
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.card_holder.errors|join:", " }}
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="expiry_date">Expiry Date</label>
+                                    <input type="text" name="expiry_date" id="expiry_date" class="form-control form-control-lg" placeholder="MM/YY" required oninput="formatExpiryDate(this)">
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.expiry_date.errors|join:", " }}
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" name="cvv" id="cvv" class="form-control form-control-lg" required maxlength="3">
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.cvv.errors|join:", " }}
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">Pay Now</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatExpiryDate(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2);
+        }
+        input.value = value;
+    }
+
+    function formatCardNumber(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 16) {
+            value = value.slice(0, 16);
+        }
+        input.value = value.match(/.{1,4}/g)?.join(' ') || '';
+    }
+
+    function stripSpaces() {
+        document.getElementById('card_number').value = document.getElementById('card_number').value.replace(/\s/g, '');
+    }
+</script>
+{% endblock %}

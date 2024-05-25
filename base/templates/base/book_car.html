@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Book Car: {{ car.name }} {{ car.model }}</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{ car.image.url }}" class="img-fluid rounded shadow" alt="{{ car.name }}">
+        </div>
+        <div class="col-md-6">
+            <form action="{% url 'book_car' car.id %}" method="POST" class="mt-3" onsubmit="return validateDates()">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="date" class="form-control form-control-lg" id="start_date" name="start_date" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input type="date" class="form-control form-control-lg" id="end_date" name="end_date" required>
+                </div>
+                {% if error_message %}
+                    <div class="alert alert-danger mt-3">{{ error_message }}</div>
+                {% endif %}
+                <div id="date-error" class="text-danger"></div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Book Now</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateDates() {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+        const today = new Date().toISOString().split('T')[0];
+        const errorDiv = document.getElementById('date-error');
+
+        if (startDate < today) {
+            errorDiv.textContent = 'Start date cannot be in the past.';
+            return false;
+        }
+
+        if (endDate < startDate) {
+            errorDiv.textContent = 'End date cannot be before start date.';
+            return false;
+        }
+
+        errorDiv.textContent = '';
+        return true;
+    }
+</script>
+{% endblock %}

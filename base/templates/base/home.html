@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="jumbotron mt-4 jumbotron-image">
+        <div class="overlay">
+            <h1 class="display-4">Welcome to Ra7al</h1>
+            <p class="lead">Find the perfect car for your next adventure.</p>
+        </div>
+    </div>
+
+    <h2 class="mt-5 mb-4">Featured Cars</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for car in cars %}
+        <div class="col">
+            <div class="card h-100 shadow">
+                <div class="card-img-container">
+                    <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.make }} {{ car.model }}">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ car.name }} {{ car.model }}</h5>
+                    <p class="card-text">{{ car.year }}</p>
+                    <p class="card-text">{{ car.price }} DH</p>
+                    <p class="card-text">City: {{ car.city }}</p>  <!-- Add city information here -->
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'car_detail' car.id %}" class="btn btn-outline-secondary btn-sm me-2">View Details</a>
+                        {% if user.is_authenticated %}
+                            {% if not user.is_superuser %}
+                                <a href="{% url 'book_car' car.id %}" class="btn btn-primary btn-sm">Book Now</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'signin' %}" class="btn btn-primary btn-sm">Sign In to Book</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

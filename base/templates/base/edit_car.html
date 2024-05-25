@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Edit Car</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ car.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" name="model" id="model" class="form-control" value="{{ car.model }}" required>
+        </div>
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" name="year" id="year" class="form-control" value="{{ car.year }}" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" name="price" id="price" class="form-control" value="{{ car.price }}" required>
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" name="city" id="city" class="form-control" value="{{ car.city }}" required>
+        </div>
+        <div class="form-group">
+            <label for="image">Image</label>
+            <input type="file" name="image" id="image" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Edit Car</button>
+    </form>
+</div>
+{% endblock %}

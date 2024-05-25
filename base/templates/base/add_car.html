@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="text-center mb-4">Add Car</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <input type="text" name="model" id="model" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" name="price" id="price" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" name="year" id="year" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" name="city" id="city" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <input type="file" name="image" id="image" class="form-control-file" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Add Car</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
