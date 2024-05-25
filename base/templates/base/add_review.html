@@ -2,11 +2,18 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">Add Review for {{ car.name }} {{ car.model }}</h1>
+    <h1 class="mb-4">Ajouter un avis pour {{ car.name }} {{ car.model }}</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Submit Review</button>
+        <div class="form-group">
+            <label for="rating">Note</label>
+            {{ form.rating }}
+        </div>
+        <div class="form-group">
+            <label for="comment">Commentaire</label>
+            {{ form.comment }}
+        </div>
+        <button type="submit" class="btn btn-primary">Soumettre l'avis</button>
     </form>
 </div>
 {% endblock %}

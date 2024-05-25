@@ -70,6 +70,6 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ['rating', 'comment']
         widgets = {
-            'rating': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+            'rating': forms.Select(choices=[(i, i) for i in range(1, 6)], attrs={'class': 'form-control'}),
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
         }

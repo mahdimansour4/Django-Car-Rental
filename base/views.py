@@ -22,7 +22,16 @@ def home(request):
 def car_detail(request, id):
     car = get_object_or_404(Car, id=id)
     reviews = Review.objects.filter(car=car)
-    return render(request, 'base/car_detail.html', {'car': car, 'reviews': reviews})
+    user_has_booked_car = False
+
+    if request.user.is_authenticated:
+        user_has_booked_car = Booking.objects.filter(user=request.user, car=car).exists()
+
+    return render(request, 'base/car_detail.html', {
+        'car': car,
+        'reviews': reviews,
+        'user_has_booked_car': user_has_booked_car
+    })
 
 # About page view
 def about(request):
@@ -273,6 +282,17 @@ def search(request):
 @login_required
 def add_review(request, car_id):
     car = get_object_or_404(Car, id=car_id)
+    
+    # Check if the user has booked this car
+    if not Booking.objects.filter(user=request.user, car=car).exists():
+        messages.error(request, "You need to book this car before adding a review.")
+        return redirect('car_detail', id=car.id)  # Redirect if no booking
+
+    # Check if the user has already reviewed this car
+    if Review.objects.filter(user=request.user, car=car).exists():
+        messages.error(request, "You have already reviewed this car.")
+        return redirect('car_detail', id=car.id)  # Redirect if review already exists
+    
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -280,7 +300,32 @@ def add_review(request, car_id):
             review.user = request.user
             review.car = car
             review.save()
+            messages.success(request, "Review added successfully.")
             return redirect('car_detail', id=car.id)
     else:
         form = ReviewForm()
     return render(request, 'base/add_review.html', {'form': form, 'car': car})
+
+@login_required
+def edit_review(request, car_id, review_id):
+    car = get_object_or_404(Car, id=car_id)
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Review updated successfully.')
+            return redirect('car_detail', id=car_id)
+    else:
+        form = ReviewForm(instance=review)
+    
+    return render(request, 'base/edit_review.html', {'form': form, 'car': car})
+
+@login_required
+def delete_review(request, car_id, review_id):
+    car = get_object_or_404(Car, id=car_id)
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    review.delete()
+    messages.success(request, 'Review deleted successfully.')
+    return redirect('car_detail', id=car_id)

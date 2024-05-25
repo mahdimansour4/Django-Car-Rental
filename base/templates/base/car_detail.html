@@ -26,7 +26,9 @@
                         <a href="{% url 'delete_car' car.id %}" class="btn btn-outline-danger btn-sm">Delete Car</a>
                     {% else %}
                         <a href="{% url 'book_car' car.id %}" class="btn btn-primary btn-sm">Book Now</a>
-                        <a href="{% url 'add_review' car.id %}" class="btn btn-secondary btn-sm">Add Review</a>
+                        {% if user_has_booked_car %}
+                            <a href="{% url 'add_review' car.id %}" class="btn btn-secondary btn-sm">Add Review</a>
+                        {% endif %}
                     {% endif %}
                 {% else %}
                     <a href="{% url 'signin' %}" class="btn btn-primary btn-sm">Sign In to Book</a>
@@ -43,6 +45,10 @@
                         <strong>{{ review.user.username }}</strong> rated {{ review.rating }}/5
                         <p>{{ review.comment }}</p>
                         <small class="text-muted">{{ review.created_at }}</small>
+                        {% if user.is_authenticated and user == review.user %}
+                            <a href="{% url 'edit_review' car.id review.id %}" class="btn btn-outline-primary btn-sm">Edit Review</a>
+                            <a href="{% url 'delete_review' car.id review.id %}" class="btn btn-outline-danger btn-sm">Delete Review</a>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
