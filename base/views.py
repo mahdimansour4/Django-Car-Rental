@@ -60,7 +60,7 @@ def book_car(request, id):
         
         booking = Booking(user=request.user, car=car, start_date=start_date, end_date=end_date)
         booking.save()
-        return redirect(reverse('home'))
+        return redirect(reverse('my_bookings'))
     
     return render(request, 'base/book_car.html', {'car': car})
 
